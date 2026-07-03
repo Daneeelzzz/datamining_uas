@@ -1,0 +1,26 @@
+// Alur Sistem NLP Random Forest
+digraph {
+	rankdir=TB size="8,8"
+	A [label="Input: Teks Berita Mentah
+(CSV Dataset)" shape=cylinder]
+	B [label="Preprocessing:
+- Case Folding
+- Stopword Removal
+- Stemming (Sastrawi)" shape=box]
+	C [label="Feature Extraction:
+TF-IDF Vectorizer" shape=box]
+	D [label="Train-Test Split
+(80% Train, 20% Test)" shape=diamond]
+	E [label="Model Training:
+Random Forest Classifier" shape=box]
+	F [label="Model Evaluation:
+Accuracy & Confusion Matrix" shape=box]
+	G [label="Output: Label Kategori & Probabilitas" shape=ellipse]
+	A -> B
+	B -> C
+	C -> D
+	D -> E [label=" Data Latih"]
+	E -> F [label=" Model Terlatih"]
+	D -> F [label=" Data Uji"]
+	F -> G
+}
