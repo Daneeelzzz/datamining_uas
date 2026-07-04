@@ -1,0 +1,15 @@
+# Dataset (terlalu besar untuk GitHub - 206 MB)
+*.csv
+
+# Model hasil training (bisa di-generate ulang)
+*.pkl
+
+# Python cache
+__pycache__/
+*.py[cod]
+*.pyo
+.env
+
+# Output gambar (opsional, bisa di-generate ulang)
+# hasil_evaluasi.png
+# confusion_matrix.png
