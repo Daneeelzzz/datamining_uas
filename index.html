@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Klasifikasi Berita AI</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f7f6; padding: 2rem; color: #333; }
+        .container { max-width: 600px; margin: 0 auto; background: white; padding: 2rem; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        h2 { text-align: center; color: #2c3e50; }
+        textarea { width: 100%; height: 150px; padding: 10px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 4px; resize: vertical; box-sizing: border-box; }
+        button { width: 100%; padding: 10px; background-color: #3498db; color: white; border: none; border-radius: 4px; font-size: 16px; cursor: pointer; transition: background 0.3s; }
+        button:hover { background-color: #2980b9; }
+        .result-box { margin-top: 20px; padding: 15px; border-radius: 4px; display: none; text-align: center; font-weight: bold; font-size: 1.2em; }
+        .success { background-color: #e8f8f5; color: #1abc9c; border: 1px solid #1abc9c; }
+        .error { background-color: #fdedec; color: #e74c3c; border: 1px solid #e74c3c; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Klasifikasi Berita Indonesia</h2>
+    <p>Masukkan teks atau paragraf berita di bawah ini untuk mengetahui kategorinya.</p>
+    
+    <textarea id="inputText" placeholder="Ketik teks berita di sini..."></textarea>
+    <button onclick="klasifikasiBerita()" id="btnSubmit">Prediksi Kategori</button>
+    
+    <div id="resultArea" class="result-box"></div>
+</div>
+
+<script>
+    async function klasifikasiBerita() {
+        const textInput = document.getElementById('inputText').value;
+        const resultArea = document.getElementById('resultArea');
+        const btnSubmit = document.getElementById('btnSubmit');
+
+        if (!textInput.trim()) {
+            showResult('Harap masukkan teks berita terlebih dahulu.', 'error');
+            return;
+        }
+
+        // Tampilan loading UI
+        btnSubmit.innerText = "Memproses...";
+        btnSubmit.disabled = true;
+        resultArea.style.display = 'none';
+
+        try {
+            // Melakukan HTTP POST request ke Backend API
+            const response = await fetch('http://127.0.0.1:8000/predict', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ teks: textInput })
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                showResult(`Kategori: ${data.kategori}`, 'success');
+            } else {
+                showResult(`Error: ${data.detail || 'Terjadi kesalahan pada server'}`, 'error');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            showResult('Gagal terhubung ke Server API. Pastikan app.py sudah berjalan.', 'error');
+        } finally {
+            // Kembalikan state tombol
+            btnSubmit.innerText = "Prediksi Kategori";
+            btnSubmit.disabled = false;
+        }
+    }
+
+    function showResult(message, type) {
+        const resultArea = document.getElementById('resultArea');
+        resultArea.textContent = message;
+        resultArea.className = `result-box ${type}`;
+        resultArea.style.display = 'block';
+    }
+</script>
+
+</body>
+</html>
